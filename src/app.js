@@ -1,11 +1,21 @@
 const app = document.querySelector('#app')
-const gridColumns = 4
-const gridRows = 3
-const pieceCount = gridColumns * gridRows
+const difficulties = {
+  easy: { label: 'かんたん', columns: 4, rows: 3 },
+  normal: { label: 'ふつう', columns: 6, rows: 4 },
+  hard: { label: 'むずかしい', columns: 8, rows: 6 },
+}
 let cats = []
 let selectedCat = null
+let selectedDifficulty = 'easy'
 let activeDrag = null
 let lastTouchedTimer = null
+
+// 選択中の難易度の設定と、そのときに使うピース数を返す
+const currentDifficulty = () => difficulties[selectedDifficulty]
+const currentPieceCount = () => {
+  const { columns, rows } = currentDifficulty()
+  return columns * rows
+}
 
 // 猫のデータから、画面に表示する画像のURLを作る
 const imageUrl = (cat) => `/public/images/cat-images/${cat.fileName}`
@@ -15,6 +25,7 @@ const shuffle = (items) => [...items].sort(() => Math.random() - 0.5)
 
 // 猫写真を選ぶ最初の画面を表示する
 const showStart = () => {
+  clearLastTouched()
   activeDrag = null
   selectedCat ||= cats[0]
   app.innerHTML = `
@@ -31,6 +42,16 @@ const showStart = () => {
         </label>
       `).join('')}
     </section>
+    <fieldset class="difficulty-list">
+      <legend>むずかしさを えらぼう</legend>
+      ${Object.entries(difficulties).map(([id, difficulty]) => `
+        <label class="difficulty-option ${id === selectedDifficulty ? 'is-selected' : ''}">
+          <input class="difficulty-radio" name="selected-difficulty" value="${id}" type="radio" ${id === selectedDifficulty ? 'checked' : ''}>
+          <span>${difficulty.label}</span>
+          <small>${difficulty.columns} × ${difficulty.rows}（${difficulty.columns * difficulty.rows}ピース）</small>
+        </label>
+      `).join('')}
+    </fieldset>
     <button class="primary-button" id="start-button" type="button">このねこで はじめる</button>
   `
   app.querySelectorAll('[name="selected-cat"]').forEach((radio) => {
@@ -39,43 +60,54 @@ const showStart = () => {
       showStart()
     })
   })
+  app.querySelectorAll('[name="selected-difficulty"]').forEach((radio) => {
+    radio.addEventListener('change', () => {
+      selectedDifficulty = radio.value
+      showStart()
+    })
+  })
   app.querySelector('#start-button').addEventListener('click', showGame)
 }
 
 // 指定した番号の写真部分を表示する、ドラッグ可能なピースを作る
 const createPiece = (pieceIndex) => {
-  const row = Math.floor(pieceIndex / gridColumns)
-  const column = pieceIndex % gridColumns
+  const { columns, rows } = currentDifficulty()
+  const row = Math.floor(pieceIndex / columns)
+  const column = pieceIndex % columns
   const piece = document.createElement('button')
   piece.type = 'button'
   piece.className = 'piece'
   piece.dataset.pieceIndex = String(pieceIndex)
   piece.setAttribute('aria-label', `パズルのピース ${pieceIndex + 1}`)
   piece.style.setProperty('--photo-url', `url("${imageUrl(selectedCat)}")`)
-  piece.style.setProperty('--background-position', `${(column / (gridColumns - 1)) * 100}% ${(row / (gridRows - 1)) * 100}%`)
-  piece.style.setProperty('--background-size', `${gridColumns * 100}% ${gridRows * 100}%`)
+  piece.style.setProperty('--background-position', `${(column / (columns - 1)) * 100}% ${(row / (rows - 1)) * 100}%`)
+  piece.style.setProperty('--background-size', `${columns * 100}% ${rows * 100}%`)
+  piece.style.setProperty('--piece-aspect', `${rows * 4} / ${columns * 3}`)
   piece.addEventListener('pointerdown', startDrag)
   return piece
 }
 
 // 選んだ猫写真を使い、盤面とピース置き場を表示する
 const showGame = () => {
+  clearLastTouched()
   activeDrag = null
+  const difficulty = currentDifficulty()
+  const pieceCount = currentPieceCount()
   app.innerHTML = `
     <div class="game-toolbar">
-      <h1>${selectedCat.title}のパズル</h1>
-      <button class="secondary-button" id="back-button" type="button">ねこをえらぶ</button>
+      <h1>${selectedCat.title}のパズル（${difficulty.label}）</h1>
+      <button class="secondary-button" id="back-button" type="button">ねこ・むずかしさをえらぶ</button>
     </div>
     <div class="game-layout">
       <section class="board-area">
         <h2>ここに おこう</h2>
         <p class="hint">ピースをドラッグして、おなじばしょに おこう！</p>
-        <div class="board" id="board" style="--photo-url: url('${imageUrl(selectedCat)}')"></div>
+        <div class="board" id="board" style="--photo-url: url('${imageUrl(selectedCat)}'); --grid-columns: ${difficulty.columns}; --grid-rows: ${difficulty.rows}"></div>
       </section>
       <section class="tray-area">
         <h2>ピース</h2>
         <p class="hint">すきなピースから はじめよう</p>
-        <div class="tray" id="tray" aria-label="パズルのピース置き場"></div>
+        <div class="tray ${pieceCount > 24 ? 'is-scrollable' : ''}" id="tray" style="--piece-aspect: ${difficulty.rows * 4} / ${difficulty.columns * 3}" aria-label="パズルのピース置き場"></div>
       </section>
     </div>
   `
@@ -113,11 +145,12 @@ const startDrag = (event) => {
   }
   movePreview(event)
   piece.addEventListener('pointermove', movePreview)
-  // ポインターを捕捉しているピースで終了イベントを受け取る。
-  // window のイベントより先に lostpointercapture が発生する環境でも、
-  // 置き場所の判定を終えてからドラッグ状態を消せるようにする。
-  piece.addEventListener('pointerup', finishDrag, { once: true })
-  piece.addEventListener('pointercancel', clearDrag, { once: true })
+  // キャプチャ段階で終了イベントを受け、素早く離した場合でも
+  // lostpointercapture より先に置き場所の判定を終える。
+  window.addEventListener('pointerup', finishDrag, true)
+  window.addEventListener('pointercancel', cancelDrag, true)
+  // OSによる操作中断などで pointerup が届かない場合も、プレビューを残さない。
+  piece.addEventListener('lostpointercapture', clearDrag, { once: true })
 }
 
 // 指やマウスの位置に合わせて、ドラッグ中のプレビューを移動する
@@ -144,7 +177,13 @@ const finishDrag = (event) => {
   target.append(piece)
   target.classList.add('is-filled')
   markLastTouched(piece)
-  if (app.querySelectorAll('.slot.is-filled').length === pieceCount) showComplete()
+  if (app.querySelectorAll('.slot.is-filled').length === currentPieceCount()) showComplete()
+}
+
+// 操作が中断されたときは、ドラッグ中のポインターだった場合だけ終了する
+const cancelDrag = (event) => {
+  if (!activeDrag || event.pointerId !== activeDrag.pointerId) return
+  clearDrag()
 }
 
 // 置けなかったピースを点滅させ、次に操作するピースを分かりやすくする
@@ -189,20 +228,24 @@ const findNearestSlot = (x, y) => {
 const clearDrag = () => {
   if (activeDrag) {
     activeDrag.piece.removeEventListener('pointermove', movePreview)
-    activeDrag.piece.removeEventListener('pointerup', finishDrag)
-    activeDrag.piece.removeEventListener('pointercancel', clearDrag)
+    activeDrag.piece.removeEventListener('lostpointercapture', clearDrag)
     activeDrag.piece.classList.remove('is-source')
   }
+  window.removeEventListener('pointerup', finishDrag, true)
+  window.removeEventListener('pointercancel', cancelDrag, true)
   document.querySelectorAll('.drag-preview').forEach((preview) => preview.remove())
   activeDrag = null
 }
 
 // すべてのピースが正しい場所に置かれたとき、完成画面を表示する
 const showComplete = () => {
+  clearLastTouched()
   activeDrag = null
+  const difficulty = currentDifficulty()
   app.innerHTML = `
     <section class="completion">
       <h1>かんせい！</h1>
+      <p>${difficulty.label}を クリアしたよ！</p>
       <img src="${imageUrl(selectedCat)}" alt="${selectedCat.altText}">
       <div class="completion-actions">
         <button class="primary-button" id="again-button" type="button">もう一度あそぶ</button>
