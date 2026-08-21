@@ -1,0 +1,66 @@
+[
+  {
+    "id": "cat-01",
+    "fileName": "chimaki.JPG",
+    "title": "ちまき",
+    "altText": "ちまきの写真",
+    "isEnabled": true,
+    "sortOrder": 1
+  },
+  {
+    "id": "cat-02",
+    "fileName": "sakura.JPG",
+    "title": "さくら",
+    "altText": "さくらの写真",
+    "isEnabled": true,
+    "sortOrder": 2
+  },
+  {
+    "id": "cat-03",
+    "fileName": "mii.JPG",
+    "title": "みぃ",
+    "altText": "みぃの写真",
+    "isEnabled": true,
+    "sortOrder": 2
+  },
+  {
+    "id": "cat-04",
+    "fileName": "chako.JPG",
+    "title": "ちゃこ",
+    "altText": "ちゃこの写真",
+    "isEnabled": true,
+    "sortOrder": 2
+  },
+  {
+    "id": "cat-05",
+    "fileName": "gomao.JPG",
+    "title": "ごまお",
+    "altText": "ごまおの写真",
+    "isEnabled": true,
+    "sortOrder": 2
+  },
+  {
+    "id": "cat-06",
+    "fileName": "furom.JPG",
+    "title": "ふろむ",
+    "altText": "ふろむの写真",
+    "isEnabled": true,
+    "sortOrder": 2
+  },
+  {
+    "id": "cat-07",
+    "fileName": "famu.JPG",
+    "title": "ふぁむ",
+    "altText": "ふぁむの写真",
+    "isEnabled": true,
+    "sortOrder": 2
+  },
+  {
+    "id": "cat-08",
+    "fileName": "pia.JPG",
+    "title": "ぴあ",
+    "altText": "ぴあの写真",
+    "isEnabled": true,
+    "sortOrder": 2
+  }
+]

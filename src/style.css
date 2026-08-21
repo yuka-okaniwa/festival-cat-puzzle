@@ -1,0 +1,42 @@
+:root { color: #33261d; background: #fff7ed; font-family: -apple-system, BlinkMacSystemFont, "Hiragino Maru Gothic ProN", sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
+button { font: inherit; }
+.app { min-height: 100vh; padding: 24px clamp(18px, 4vw, 56px) 36px; }
+.page-header { text-align: center; }
+.page-header h1 { margin: 0; color: #c55327; font-size: clamp(28px, 4vw, 44px); }
+.page-header p { margin: 8px 0 22px; font-size: clamp(16px, 2vw, 20px); }
+.photo-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 18px; max-width: 900px; margin: 0 auto 26px; }
+.photo-card { position: relative; display: block; overflow: hidden; padding: 0; border: 5px solid transparent; border-radius: 20px; background: white; box-shadow: 0 4px 14px #57331c25; cursor: pointer; }
+.photo-card.is-selected { border-color: #f59e0b; }
+.photo-radio { position: absolute; opacity: 0; pointer-events: none; }
+.photo-card:has(.photo-radio:focus-visible) { outline: 4px solid #2563eb; outline-offset: 3px; }
+.photo-card img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+.photo-card span { display: block; padding: 10px; font-weight: 700; font-size: 20px; }
+.primary-button, .secondary-button { display: block; min-height: 56px; padding: 12px 28px; border: 0; border-radius: 999px; font-weight: 800; font-size: 20px; cursor: pointer; }
+.primary-button { margin: 0 auto; background: #e76f38; color: white; box-shadow: 0 4px 0 #ad4721; }
+.secondary-button { background: #ffe5bc; color: #74401d; }
+.primary-button:active, .secondary-button:active { transform: translateY(3px); box-shadow: none; }
+.game-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; max-width: 1120px; margin: 0 auto 16px; }
+.game-toolbar h1 { margin: 0; color: #c55327; font-size: clamp(24px, 3vw, 36px); }
+.game-layout { display: grid; grid-template-columns: minmax(0, 3fr) minmax(260px, 2fr); gap: clamp(20px, 4vw, 52px); max-width: 1120px; margin: auto; }
+.board-area h2, .tray-area h2 { margin: 0 0 8px; font-size: 22px; }
+.hint { margin: 0 0 14px; font-size: 17px; font-weight: 700; }
+.board { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(3, 1fr); aspect-ratio: 3 / 2; overflow: hidden; border: 7px solid #8e5b3a; border-radius: 14px; background-image: linear-gradient(#ffffff9c, #ffffff9c), var(--photo-url); background-position: center; background-size: cover; box-shadow: 0 6px 18px #57331c2b; }
+.slot { border: 1px dashed #8e5b3a99; }
+.slot.is-filled { border-style: solid; border-color: #8e5b3a; }
+.tray { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: min-content; align-content: start; align-items: start; gap: 9px; min-height: 180px; padding: 12px; border: 3px dashed #d69a65; border-radius: 16px; background: #fffdf9; }
+.piece { display: block; width: 100%; aspect-ratio: 9 / 8; align-self: start; border: 3px solid #fff; border-radius: 8px; background-image: var(--photo-url); background-position: var(--background-position); background-size: var(--background-size); box-shadow: 0 3px 8px #57331c3d; touch-action: none; cursor: grab; }
+.piece:active { cursor: grabbing; }
+.piece.is-last-touched { animation: last-touched-piece .8s ease-in-out infinite; }
+.slot .piece { height: 100%; aspect-ratio: auto; border: 0; border-radius: 0; box-shadow: none; cursor: default; }
+.piece.is-source { opacity: .25; }
+.drag-preview { position: fixed; z-index: 10; pointer-events: none; opacity: .9; transform: translate(-50%, -50%) rotate(3deg); }
+.completion { max-width: 620px; margin: 30px auto; text-align: center; }
+.completion h1 { color: #c55327; font-size: clamp(36px, 6vw, 56px); }
+.completion img { width: 100%; border: 8px solid white; border-radius: 18px; box-shadow: 0 6px 18px #57331c2b; }
+.completion-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; margin-top: 24px; }
+.completion-actions .primary-button, .completion-actions .secondary-button { margin: 0; }
+.error { max-width: 600px; margin: 80px auto; text-align: center; }
+@keyframes last-touched-piece { 50% { opacity: .35; } }
+@media (max-width: 760px) { .app { padding: 18px 14px 26px; } .game-layout { grid-template-columns: 1fr; } .tray { min-height: 120px; } }
