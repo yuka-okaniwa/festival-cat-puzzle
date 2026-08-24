@@ -10,6 +10,10 @@ let selectedDifficulty = 'easy'
 let activeDrag = null
 let lastTouchedTimer = null
 
+// 指で置きやすいように、正解マスの外側まで当たり判定を広げる割合。
+// 判定同士が重なっても、ピースごとに自分の正解マスだけを見るため問題ない。
+const dropTargetExpansion = 0.6
+
 // 選択中の難易度の設定と、そのときに使うピース数を返す
 const currentDifficulty = () => difficulties[selectedDifficulty]
 const currentPieceCount = () => {
@@ -101,7 +105,7 @@ const showGame = () => {
     <div class="game-layout">
       <section class="board-area">
         <h2>ここに おこう</h2>
-        <p class="hint">ピースをドラッグして、おなじばしょに おこう！</p>
+        <p class="hint">ピースをドラッグして、おなじばしょの近くに おこう！</p>
         <div class="board" id="board" style="--photo-url: url('${imageUrl(selectedCat)}'); --grid-columns: ${difficulty.columns}; --grid-rows: ${difficulty.rows}"></div>
       </section>
       <section class="tray-area">
@@ -164,9 +168,8 @@ const movePreview = (event) => {
 const finishDrag = (event) => {
   if (!activeDrag || event.pointerId !== activeDrag.pointerId) return
   const { piece, origin, nextSibling } = activeDrag
-  const target = findNearestSlot(event.clientX, event.clientY)
-  const isCorrectSlot = target && !target.classList.contains('is-filled')
-    && Number(target.dataset.slotIndex) === Number(piece.dataset.pieceIndex)
+  const target = findCorrectSlot(piece)
+  const isCorrectSlot = target && isWithinDropTarget(target, event.clientX, event.clientY)
   clearDrag()
   if (!isCorrectSlot) {
     if (nextSibling) origin.insertBefore(piece, nextSibling)
@@ -205,23 +208,18 @@ const clearLastTouched = () => {
   lastTouchedTimer = null
 }
 
-// 盤面内で最も中心に近い枠を、ピースを置く候補として返す
-const findNearestSlot = (x, y) => {
-  const board = app.querySelector('#board')
-  const boardRect = board.getBoundingClientRect()
-  const isOutsideBoard = x < boardRect.left || x > boardRect.right
-    || y < boardRect.top || y > boardRect.bottom
-  if (isOutsideBoard) return null
+// ピース自身の正解マスを返す。ほかのマスに重なっていても、このマスの判定だけを使う。
+const findCorrectSlot = (piece) => app.querySelector(
+  `.slot[data-slot-index="${piece.dataset.pieceIndex}"]`,
+)
 
-  return Array.from(board.querySelectorAll('.slot')).reduce((nearestSlot, slot) => {
-    const nearestRect = nearestSlot.getBoundingClientRect()
-    const slotRect = slot.getBoundingClientRect()
-    const nearestDistance = (x - (nearestRect.left + nearestRect.width / 2)) ** 2
-      + (y - (nearestRect.top + nearestRect.height / 2)) ** 2
-    const slotDistance = (x - (slotRect.left + slotRect.width / 2)) ** 2
-      + (y - (slotRect.top + slotRect.height / 2)) ** 2
-    return slotDistance < nearestDistance ? slot : nearestSlot
-  })
+// 正解マスの周囲まで広げた範囲に、指やマウスの位置が入っているか調べる
+const isWithinDropTarget = (slot, x, y) => {
+  const rect = slot.getBoundingClientRect()
+  const horizontalPadding = rect.width * dropTargetExpansion
+  const verticalPadding = rect.height * dropTargetExpansion
+  return x >= rect.left - horizontalPadding && x <= rect.right + horizontalPadding
+    && y >= rect.top - verticalPadding && y <= rect.bottom + verticalPadding
 }
 
 // ドラッグ用プレビューを消し、ドラッグ中の状態を終了する
