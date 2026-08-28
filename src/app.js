@@ -21,8 +21,9 @@ const currentPieceCount = () => {
   return columns * rows
 }
 
-// 猫のデータから、画面に表示する画像のURLを作る
-const imageUrl = (cat) => `./public/images/cat-images/${cat.fileName}`
+// このモジュールの場所を基準に、画面に表示する画像のURLを作る
+const publicUrl = (path) => new URL(`../public/${path}`, import.meta.url).href
+const imageUrl = (cat) => publicUrl(`images/cat-images/${cat.fileName}`)
 
 // 配列の要素をランダムな順番に並べ替えた新しい配列を返す
 const shuffle = (items) => [...items].sort(() => Math.random() - 0.5)
@@ -258,7 +259,7 @@ const showComplete = () => {
 // JSONから猫写真の一覧を読み込み、最初の画面を表示する
 const loadCats = async () => {
   try {
-    const response = await fetch('./public/data/cat-images.json')
+    const response = await fetch(publicUrl('data/cat-images.json'))
     if (!response.ok) throw new Error('写真データを読み込めませんでした。')
     cats = (await response.json()).filter((cat) => cat.isEnabled)
       .sort((first, second) => first.sortOrder - second.sortOrder)
