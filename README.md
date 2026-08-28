@@ -25,4 +25,4 @@ Macでは `http://localhost:8080` を開きます。iPadでは、Macと同じWi-
 
 制作の判断と手順は [docs/PROJECT_LOG.md](docs/PROJECT_LOG.md) に追記します。実装の仕様は [docs/APP_SPECIFICATION.md](docs/APP_SPECIFICATION.md) を参照してください。
 
-猫写真は `public/images/cat-images/` に配置し、選択画面に表示する写真は `public/data/cat-images.json` で管理します。
+猫写真は `/public/images/cat-images/` に配置し、選択画面に表示する写真は `public/data/cat-images.json` で管理します。

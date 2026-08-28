@@ -22,7 +22,7 @@ const currentPieceCount = () => {
 }
 
 // 猫のデータから、画面に表示する画像のURLを作る
-const imageUrl = (cat) => `/public/images/cat-images/${cat.fileName}`
+const imageUrl = (cat) => `./public/images/cat-images/${cat.fileName}`
 
 // 配列の要素をランダムな順番に並べ替えた新しい配列を返す
 const shuffle = (items) => [...items].sort(() => Math.random() - 0.5)
