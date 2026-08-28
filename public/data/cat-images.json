@@ -1,7 +1,7 @@
 [
   {
     "id": "cat-01",
-    "fileName": "chimaki1.JPG",
+    "fileName": "chimaki1.png",
     "title": "ちまき",
     "altText": "ちまきの写真",
     "isEnabled": true,
@@ -9,7 +9,7 @@
   },
   {
     "id": "cat-02",
-    "fileName": "sakura1.JPG",
+    "fileName": "sakura3.JPG",
     "title": "さくら",
     "altText": "さくらの写真",
     "isEnabled": true,
@@ -17,7 +17,7 @@
   },
   {
     "id": "cat-03",
-    "fileName": "mii1.JPG",
+    "fileName": "mii1.png",
     "title": "みぃ",
     "altText": "みぃの写真",
     "isEnabled": true,
@@ -25,7 +25,7 @@
   },
   {
     "id": "cat-04",
-    "fileName": "chako1.JPG",
+    "fileName": "chako2.png",
     "title": "ちゃこ",
     "altText": "ちゃこの写真",
     "isEnabled": true,
@@ -33,7 +33,7 @@
   },
   {
     "id": "cat-05",
-    "fileName": "gomao1.JPG",
+    "fileName": "gomao1.png",
     "title": "ごまお",
     "altText": "ごまおの写真",
     "isEnabled": true,
@@ -41,7 +41,7 @@
   },
   {
     "id": "cat-06",
-    "fileName": "furom1.JPG",
+    "fileName": "furom1.png",
     "title": "ふろむ",
     "altText": "ふろむの写真",
     "isEnabled": true,
@@ -49,7 +49,7 @@
   },
   {
     "id": "cat-07",
-    "fileName": "famu1.JPG",
+    "fileName": "famu1.png",
     "title": "ふぁむ",
     "altText": "ふぁむの写真",
     "isEnabled": true,
@@ -57,7 +57,7 @@
   },
   {
     "id": "cat-08",
-    "fileName": "pia1.JPG",
+    "fileName": "pia1.png",
     "title": "ぴあ",
     "altText": "ぴあの写真",
     "isEnabled": true,
