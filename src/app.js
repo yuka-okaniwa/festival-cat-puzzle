@@ -258,7 +258,7 @@ const showComplete = () => {
 // JSONから猫写真の一覧を読み込み、最初の画面を表示する
 const loadCats = async () => {
   try {
-    const response = await fetch('/public/data/cat-images.json')
+    const response = await fetch('./public/data/cat-images.json')
     if (!response.ok) throw new Error('写真データを読み込めませんでした。')
     cats = (await response.json()).filter((cat) => cat.isEnabled)
       .sort((first, second) => first.sortOrder - second.sortOrder)
