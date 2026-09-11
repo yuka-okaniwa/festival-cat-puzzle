@@ -49,3 +49,55 @@ button { font: inherit; }
 .error { max-width: 600px; margin: 80px auto; text-align: center; }
 @keyframes last-touched-piece { 50% { opacity: .35; } }
 @media (max-width: 760px) { .app { padding: 18px 14px 26px; } .game-layout { grid-template-columns: 1fr; } .tray { min-height: 120px; } }
+
+/* svh はSafariのツールバーが表示されているときの高さ。
+   高さから写真・盤面の幅を決め、横向きではページ内のスクロールを不要にする。 */
+@media (min-width: 761px) and (orientation: landscape) {
+  .app {
+    --screen-height: 100vh;
+    --screen-height: 100svh;
+    --play-height: calc(var(--screen-height) - 180px);
+    min-height: var(--screen-height);
+    padding: max(12px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  }
+  .page-header h1 { font-size: 30px; }
+  .page-header p { margin: 4px 0 12px; font-size: 17px; }
+  .photo-list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    width: min(100%, 900px, calc((var(--screen-height) - 380px) * 8 / 3));
+    margin-bottom: 12px;
+  }
+  .photo-card { border-width: 3px; border-radius: 14px; }
+  .photo-card span { padding: 4px; font-size: 18px; }
+  .difficulty-list { gap: 10px; margin-bottom: 12px; }
+  .difficulty-list legend { font-size: 18px; }
+  .difficulty-option { padding: 6px 16px; border-width: 3px; }
+  .difficulty-option span { font-size: 19px; }
+  .primary-button, .secondary-button { min-height: 48px; padding: 10px 24px; font-size: 18px; }
+  .game-toolbar { margin-bottom: 12px; }
+  .game-toolbar h1 { font-size: 26px; }
+  .game-layout { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 24px; }
+  .board-area, .tray-area { min-width: 0; }
+  .board-area h2, .tray-area h2 { font-size: 20px; }
+  .hint { min-height: 40px; margin-bottom: 8px; font-size: 16px; line-height: 20px; }
+  .board { width: min(calc(100% - 14px), calc((var(--play-height) - 14px) * 4 / 3)); margin-inline: auto; }
+  .tray, .tray.is-scrollable {
+    /* 各難易度の全ピースを表示。隙間と枠も高さの計算に含める。 */
+    width: min(100%, calc((var(--play-height) - 22px - (var(--tray-rows) - 1) * 6px) * 4 / 3 + (var(--tray-columns) - 1) * 6px + 22px));
+    grid-template-columns: repeat(var(--tray-columns), minmax(0, 1fr));
+    gap: 6px;
+    min-height: 0;
+    max-height: none;
+    margin-inline: auto;
+    padding: 8px;
+    overflow: visible;
+  }
+  .piece { min-width: 0; padding: 0; border-width: 2px; border-radius: 5px; }
+  .completion { max-width: none; margin: 0 auto; }
+  .completion h1 { margin: 0 0 4px; font-size: 36px; }
+  .completion p { margin: 0 0 12px; }
+  .completion img { width: min(100%, 620px, calc((var(--screen-height) - 192px) * 4 / 3)); margin: auto; }
+  .completion-actions { margin-top: 16px; }
+  .error { margin: 24px auto; }
+}

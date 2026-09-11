@@ -112,7 +112,7 @@ const showGame = () => {
       <section class="tray-area">
         <h2>ピース</h2>
         <p class="hint">すきなピースから はじめよう</p>
-        <div class="tray ${pieceCount > 24 ? 'is-scrollable' : ''}" id="tray" style="--piece-aspect: ${difficulty.rows * 4} / ${difficulty.columns * 3}" aria-label="パズルのピース置き場"></div>
+        <div class="tray ${pieceCount > 24 ? 'is-scrollable' : ''}" id="tray" style="--piece-aspect: ${difficulty.rows * 4} / ${difficulty.columns * 3}; --tray-columns: ${difficulty.columns}; --tray-rows: ${difficulty.rows}" aria-label="パズルのピース置き場"></div>
       </section>
     </div>
   `
